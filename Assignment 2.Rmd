@@ -1,0 +1,112 @@
+---
+title: "Assignment 2"
+author: "Keliang Xu"
+date: "10/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,eval = TRUE,warning=F,message=F)
+```
+```{r,echo=FALSE}
+library(Rcpp)
+library(rstanarm)
+library(ggplot2)
+library(ggridges)
+library(knitr)
+library(tidyverse)
+library(dplyr)
+library(stringr)
+```
+## Input data
+
+```{r pressure, echo=FALSE}
+child_mortality <- read.csv("C:\\Users\\xukel\\OneDrive\\Desktop\\2021Autumn\\MA615 B1 Data Science in R (Fall 2021)\\Assignment2\\Assignment-2\\child_mortality_0_5_year_olds_dying_per_1000_born.csv",head=T)
+child_per<-read.csv("C:\\Users\\xukel\\OneDrive\\Desktop\\2021Autumn\\MA615 B1 Data Science in R (Fall 2021)\\Assignment2\\Assignment-2\\children_per_woman_total_fertility.csv",head=T)
+
+```
+
+I choose two data files from Gapminder website.
+Firstly, babies per woman, which is the number of children that would be born to each woman with prevailing age-specific fertility rate.
+I put these data in child_per.
+
+I will show the fist five lists of data.
+
+```{r}
+head(child_per[,1:5])
+```
+
+Secondly, child mortality(0-5 year-olds dying per 1000 born), which is the death of children under five years of age per 1000 live births.
+I put this data in child_mortality.
+
+I will show the fist five lists of data.
+
+```{r}
+head(child_mortality[,1:5])
+```
+
+## Tidy data
+These two data files should do something to make them seem clean and clear.
+
+First, I remove the garbled codes in the list name "country".
+
+Second, I change these two matrices to the long matrix and add a column of years, which is the previous list name "X1xxx".
+
+Third, I inner join these two matrices to combine the data and remove unnecessary data.
+
+Fourth, I change the new list year which is char with "X1xxx" into int value.
+
+
+And this is the new matrix.
+ 
+```{r}
+source(file = "C:\\Users\\xukel\\OneDrive\\Desktop\\2021Autumn\\MA615 B1 Data Science in R (Fall 2021)\\Assignment2\\Assignment-2\\wrangling_code.R",echo = FALSE)
+child<-childnew(child_per,child_mortality)
+head(child)
+```
+## Select data
+
+There are 186 countries in my data file. I count the number of countries by function group_by.
+
+```{r}
+child_num<-child %>% group_by(country)%>%summarise(year_min=min(year))#select every country
+count(child_num)
+```
+So I want to choose five countries in my picture to illustrate.
+
+China, Germany, Japan, United Kingdom, United States
+
+## Picture visualization
+
+I choose these five countries and put them into a new matrix name child_new.
+
+```{r}
+chosen<-c("China", "Germany", "Japan", "United Kingdom", "United States")
+#this is the list I put the countries I choose.
+child_new<-subset(child,child$country==chosen[1])#choose country== "China"
+for(i in 2:5){
+  child_new<-rbind(child_new,subset(child,child$country==chosen[i]))
+}
+
+```
+First picture is about babies per woman.
+
+It can be seen from this figure that the United States had the largest number at first around 1800. All groups showed a downward trend, but there were fluctuations between 1900 and 2000, especially in China, which fluctuated greatly from 1950 to 1970. In the end, all countries approached 2 by 2100.
+
+```{r}
+ggplot(data = child_new)+geom_point(mapping=aes(x=year,y=child_per,color=country))
+
+```
+
+Second picture is about child mortality.
+
+Child mortality in these countries has dropped significantly from 1800 to 2100. And the largest decline occurred between 1900 and 2000. Germany experienced relatively large fluctuations between 1820 and 1870, and it once reached the maximum of about 550 among all countries. I guess it may be related to war.
+
+
+```{r}
+ggplot(data = child_new)+geom_point(mapping=aes(x=year,y=child_mortality,color=country))
+
+```
+
+
+It shows that babies per woman and child mortality at the beginning is larger, and later they are less. Comparing the two figures, it can be inferred that perhaps because the child’s mortality rate has dropped, the mother does not need to have so many more children.
