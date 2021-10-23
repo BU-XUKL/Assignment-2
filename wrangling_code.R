@@ -15,3 +15,4 @@ childnew<-function(child_per,child_mortality){
   child$year<-as.double(child$year)
   return(child)
 }
+

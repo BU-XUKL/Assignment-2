@@ -21,8 +21,9 @@ library(stringr)
 ## Input data
 
 ```{r pressure, echo=FALSE}
-child_mortality <- read.csv("C:\\Users\\xukel\\OneDrive\\Desktop\\2021Autumn\\MA615 B1 Data Science in R (Fall 2021)\\Assignment2\\Assignment-2\\child_mortality_0_5_year_olds_dying_per_1000_born.csv",head=T)
-child_per<-read.csv("C:\\Users\\xukel\\OneDrive\\Desktop\\2021Autumn\\MA615 B1 Data Science in R (Fall 2021)\\Assignment2\\Assignment-2\\children_per_woman_total_fertility.csv",head=T)
+library(readr)
+child_mortality <- read.csv("child_mortality_0_5_year_olds_dying_per_1000_born.csv")
+child_per<-read.csv("children_per_woman_total_fertility.csv")
 
 ```
 
@@ -60,7 +61,7 @@ Fourth, I change the new list year which is char with "X1xxx" into int value.
 And this is the new matrix.
  
 ```{r}
-source(file = "C:\\Users\\xukel\\OneDrive\\Desktop\\2021Autumn\\MA615 B1 Data Science in R (Fall 2021)\\Assignment2\\Assignment-2\\wrangling_code.R",echo = FALSE)
+source(file = "wrangling_code.R",echo = FALSE)
 child<-childnew(child_per,child_mortality)
 head(child)
 ```
@@ -94,8 +95,8 @@ First picture is about babies per woman.
 It can be seen from this figure that the United States had the largest number at first around 1800. All groups showed a downward trend, but there were fluctuations between 1900 and 2000, especially in China, which fluctuated greatly from 1950 to 1970. In the end, all countries approached 2 by 2100.
 
 ```{r}
-ggplot(data = child_new)+geom_point(mapping=aes(x=year,y=child_per,color=country))
-
+source(file = "visualization.R",echo = FALSE)
+plot1(child_new)
 ```
 
 Second picture is about child mortality.
@@ -104,8 +105,7 @@ Child mortality in these countries has dropped significantly from 1800 to 2100. 
 
 
 ```{r}
-ggplot(data = child_new)+geom_point(mapping=aes(x=year,y=child_mortality,color=country))
-
+plot2(child_new)
 ```
 
 
